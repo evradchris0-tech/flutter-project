@@ -49,22 +49,10 @@ class ProfileScreen extends ConsumerWidget {
           style: GoogleFonts.montserrat(
             fontSize: 22,
             fontWeight: FontWeight.bold,
-            color: isDark ? Colors.white : Colors.black87,
+            color: Colors.white,
           ),
         ),
         centerTitle: false,
-        backgroundColor: isDark ? const Color(0xFF1E1E20) : Colors.white,
-        elevation: 0,
-        surfaceTintColor: Colors.transparent,
-        shadowColor: Colors.transparent,
-        bottom: PreferredSize(
-          preferredSize: const Size.fromHeight(1),
-          child: Divider(
-            height: 1,
-            thickness: 0.5,
-            color: isDark ? Colors.white12 : Colors.black12,
-          ),
-        ),
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -145,7 +133,7 @@ class ProfileScreen extends ConsumerWidget {
 
             _sectionTitle('Aide', isDark),
             _sectionBox(isDark, children: [
-              _optionRow('À propos de Discover Cameroon', isDark: isDark),
+              _optionRow('À propos de Camer Tour', isDark: isDark),
               _divider(isDark),
               _optionRow("Accéder au Centre d'aide", isDark: isDark),
               _divider(isDark),

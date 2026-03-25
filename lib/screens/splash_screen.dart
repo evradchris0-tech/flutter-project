@@ -117,7 +117,7 @@ class _SplashScreenState extends State<SplashScreen>
               child: FadeTransition(
                 opacity: _titleFade,
                 child: Text(
-                  'Discover',
+                  'Camer',
                   style: GoogleFonts.playfairDisplay(
                     color: Colors.white,
                     fontSize: 42,
@@ -133,7 +133,7 @@ class _SplashScreenState extends State<SplashScreen>
               child: FadeTransition(
                 opacity: _titleFade,
                 child: Text(
-                  'Cameroon',
+                  'Tour',
                   style: GoogleFonts.playfairDisplay(
                     color: const Color(0xFFC8973A),
                     fontSize: 42,

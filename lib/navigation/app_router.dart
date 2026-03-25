@@ -5,11 +5,13 @@ import '../features/auth/presentation/screens/login_screen.dart';
 import '../features/auth/presentation/screens/register_screen.dart';
 import '../screens/auth_screen.dart';
 import '../screens/about_screen.dart';
+import '../screens/all_destinations_screen.dart';
 import '../screens/detail_screen.dart';
 import '../screens/main_screen.dart';
 import '../screens/quiz_screen.dart';
 import '../screens/search_screen.dart';
 import '../screens/splash_screen.dart';
+import '../screens/region_screen.dart';
 import 'package:discover_cameroon/screens/bookings_screen.dart';
 import '../screens/partner_detail_screen.dart';
 import '../screens/profile_screen.dart';
@@ -117,6 +119,34 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/bookings',
       builder: (context, state) => const MyBookingsScreen(),
+    ),
+    GoRoute(
+      path: '/region',
+      pageBuilder: (context, state) {
+        final data = state.extra as Map<String, String>;
+        return CustomTransitionPage(
+          key: state.pageKey,
+          child: RegionScreen(
+            name: data['name']!,
+            filterKey: data['filterKey']!,
+          ),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            final tween = Tween(begin: const Offset(1.0, 0.0), end: Offset.zero)
+                .chain(CurveTween(curve: Curves.easeOutCubic));
+            return SlideTransition(position: animation.drive(tween), child: child);
+          },
+        );
+      },
+    ),
+    GoRoute(
+      path: '/all-destinations',
+      pageBuilder: (context, state) => CustomTransitionPage(
+        key: state.pageKey,
+        child: const AllDestinationsScreen(),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+      ),
     ),
     GoRoute(
       path: '/auth',

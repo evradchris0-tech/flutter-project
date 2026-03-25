@@ -67,7 +67,7 @@ class _AboutScreenState extends State<AboutScreen>
                 );
               },
               child: Text(
-                'Discover Cameroon',
+                'Camer Tour',
                 style: GoogleFonts.playfairDisplay(
                   fontSize: 28,
                   fontWeight: FontWeight.w700,

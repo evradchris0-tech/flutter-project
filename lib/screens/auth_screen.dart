@@ -160,7 +160,7 @@ class _AuthScreenState extends State<AuthScreen>
           ),
           const SizedBox(height: 8),
           Text(
-            'Rejoignez la communauté Discover Cameroon.',
+            'Rejoignez la communauté Camer Tour.',
             style: GoogleFonts.inter(fontSize: 14, color: Colors.grey[600]),
           ),
           const SizedBox(height: 32),

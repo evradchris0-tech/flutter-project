@@ -56,7 +56,7 @@ class MapScreen extends ConsumerStatefulWidget {
 }
 
 class _MapScreenState extends ConsumerState<MapScreen> {
-  DestinationCategory? _filterCat;
+  DestinationCategory _filterCat = DestinationCategory.values.first;
   final _mapController = MapController();
   bool _locating = false;
   LatLng? _userPosition; // position GPS réelle de l'utilisateur
@@ -107,7 +107,6 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
     final bgColor = isDark ? const Color(0xFF1A1F2E) : Colors.white;
     final chipBg  = isDark ? const Color(0xFF2A2F42) : Colors.white;
-    final chipText = isDark ? Colors.white70 : Colors.black87;
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -118,9 +117,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
         ),
         error: (e, _) => Center(child: Text('Erreur : $e')),
         data: (destinations) {
-          final filtered = _filterCat == null
-              ? destinations
-              : destinations.where((d) => d.category == _filterCat).toList();
+          final filtered =
+              destinations.where((d) => d.category == _filterCat).toList();
+
+          // Hauteur du header vert = padding.top + 12 + 36 (filtres) + 8 + 50 (search) + 12 = padding.top + 118
+          final headerHeight = MediaQuery.of(context).padding.top + 118.0;
 
           return Stack(
             children: [
@@ -153,41 +154,53 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                       );
                     }).toList(),
                   ),
-                  // cercle de précision + point bleu pour la position de l'utilisateur
                   if (_userPosition != null) ..._buildLocationLayers(_userPosition!),
                 ],
               ),
 
-              // barre de recherche en haut
+              // Header vert : filtres au-dessus de la barre de recherche
               Positioned(
-                top: MediaQuery.of(context).padding.top + 12,
-                left: 12,
-                right: 12,
-                child: _SearchBar(
-                  isDark: isDark,
-                  chipBg: chipBg,
-                  onSearch: () => context.push('/search'),
-                ),
-              ),
-
-              // filtres horizontaux juste en dessous
-              Positioned(
-                top: MediaQuery.of(context).padding.top + 72,
+                top: 0,
                 left: 0,
                 right: 0,
-                child: _HorizontalFilters(
-                  selected: _filterCat,
-                  destinations: destinations,
-                  isDark: isDark,
-                  chipBg: chipBg,
-                  chipText: chipText,
-                  onSelected: (cat) => setState(() => _filterCat = cat),
+                child: Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [Color(0xFF1A3C34), Color(0xFF2D6A4F)],
+                    ),
+                  ),
+                  padding: EdgeInsets.only(
+                    top: MediaQuery.of(context).padding.top + 12,
+                    bottom: 12,
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Filtres horizontaux (sans "Tout", sans compteurs, sans ombres)
+                      _HorizontalFilters(
+                        selected: _filterCat,
+                        onSelected: (cat) => setState(() => _filterCat = cat),
+                      ),
+                      const SizedBox(height: 8),
+                      // Barre de recherche
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 12),
+                        child: _SearchBar(
+                          isDark: isDark,
+                          chipBg: chipBg,
+                          onSearch: () => context.push('/search'),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
 
               // bouton layers
               Positioned(
-                top: MediaQuery.of(context).padding.top + 168,
+                top: headerHeight + 8,
                 right: 12,
                 child: _MapActionButton(
                   icon: Icons.layers_rounded,
@@ -198,7 +211,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
 
               // bouton ma position (GPS réel)
               Positioned(
-                top: MediaQuery.of(context).padding.top + 220,
+                top: headerHeight + 58,
                 right: 12,
                 child: _locating
                     ? Container(
@@ -279,7 +292,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
           ),
         ),
         padding: EdgeInsets.fromLTRB(
-            20, 12, 20, 24 + MediaQuery.of(context).padding.bottom),
+            20, 12, 20, 24 + MediaQuery.viewPaddingOf(context).bottom),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -495,69 +508,60 @@ class _SearchBar extends StatelessWidget {
   }
 }
 
-// filtres horizontaux scrollables
+// filtres horizontaux — sans "Tout", sans compteurs, sans ombres
 class _HorizontalFilters extends StatelessWidget {
-  final DestinationCategory? selected;
-  final List<Destination> destinations;
-  final bool isDark;
-  final Color chipBg;
-  final Color chipText;
-  final void Function(DestinationCategory?) onSelected;
+  final DestinationCategory selected;
+  final void Function(DestinationCategory) onSelected;
 
   const _HorizontalFilters({
     required this.selected,
-    required this.destinations,
-    required this.isDark,
-    required this.chipBg,
-    required this.chipText,
     required this.onSelected,
   });
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 38,
+      height: 36,
       child: ListView(
         scrollDirection: Axis.horizontal,
         padding: const EdgeInsets.symmetric(horizontal: 12),
-        children: [
-          _chip('Tout', Icons.explore, const Color(0xFF1A3C34), selected == null,
-              () => onSelected(null)),
-          ...DestinationCategory.values.map((cat) {
-            final count = destinations.where((d) => d.category == cat).length;
-            return _chip('${cat.shortLabel} ($count)', cat.markerIcon, cat.markerColor,
-                selected == cat, () => onSelected(selected == cat ? null : cat));
-          }),
-        ],
-      ),
-    );
-  }
-
-  Widget _chip(String label, IconData icon, Color color, bool isSelected, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 180),
-        margin: const EdgeInsets.only(right: 8),
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-        decoration: BoxDecoration(
-          color: isSelected ? color : chipBg,
-          borderRadius: BorderRadius.circular(20),
-          boxShadow: const [BoxShadow(color: Colors.black26, blurRadius: 4, offset: Offset(0, 1))],
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 13, color: isSelected ? Colors.white : color),
-            const SizedBox(width: 5),
-            Text(label,
-                style: GoogleFonts.inter(
-                  fontSize: 12,
-                  fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                  color: isSelected ? Colors.white : chipText,
-                )),
-          ],
-        ),
+        children: DestinationCategory.values.map((cat) {
+          final isSelected = selected == cat;
+          return GestureDetector(
+            onTap: () => onSelected(cat),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 180),
+              margin: const EdgeInsets.only(right: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
+              decoration: BoxDecoration(
+                color: isSelected
+                    ? Colors.white
+                    : Colors.white.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(20),
+                // Pas d'ombre
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    cat.markerIcon,
+                    size: 13,
+                    color: isSelected ? cat.markerColor : Colors.white,
+                  ),
+                  const SizedBox(width: 5),
+                  Text(
+                    cat.shortLabel,
+                    style: GoogleFonts.inter(
+                      fontSize: 12,
+                      fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
+                      color: isSelected ? cat.markerColor : Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }).toList(),
       ),
     );
   }

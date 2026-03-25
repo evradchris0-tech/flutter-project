@@ -20,8 +20,12 @@ class FavoritesScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final favoritesAsync = ref.watch(favoriteDestinationsProvider);
 
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Mes Favoris')),
+      backgroundColor:
+          isDark ? const Color(0xFF141416) : const Color(0xFFF5F5F5),
+      appBar: AppBar(title: const Text('Mes Favoris'), centerTitle: false),
       body: favoritesAsync.when(
         loading: () => const Center(child: CircularProgressIndicator()),
         error: (e, _) => Center(child: Text('Erreur : $e')),

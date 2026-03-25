@@ -77,7 +77,7 @@ class DiscoverCameroonApp extends ConsumerWidget {
     };
 
     return MaterialApp.router(
-      title: 'Discover Cameroon',
+      title: 'Camer Tour',
       debugShowCheckedModeBanner: false,
       themeMode: themeMode,
       locale: locale,
