@@ -111,34 +111,33 @@ class _SplashScreenState extends State<SplashScreen>
 
             const SizedBox(height: 32),
 
-            // Titre : vient du bas grâce à SlideTransition + fondu.
+            // Titre sur une seule ligne : "Kmer" blanc + "Tour" doré
             SlideTransition(
               position: _titleSlide,
               child: FadeTransition(
                 opacity: _titleFade,
-                child: Text(
-                  'Camer',
-                  style: GoogleFonts.playfairDisplay(
-                    color: Colors.white,
-                    fontSize: 42,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 1,
-                  ),
-                ),
-              ),
-            ),
-
-            SlideTransition(
-              position: _titleSlide,
-              child: FadeTransition(
-                opacity: _titleFade,
-                child: Text(
-                  'Tour',
-                  style: GoogleFonts.playfairDisplay(
-                    color: const Color(0xFFC8973A),
-                    fontSize: 42,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 1,
+                child: RichText(
+                  text: TextSpan(
+                    children: [
+                      TextSpan(
+                        text: 'Kmer',
+                        style: GoogleFonts.playfairDisplay(
+                          color: Colors.white,
+                          fontSize: 48,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 1,
+                        ),
+                      ),
+                      TextSpan(
+                        text: 'Tour',
+                        style: GoogleFonts.playfairDisplay(
+                          color: const Color(0xFFC8973A),
+                          fontSize: 48,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 1,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -149,11 +148,12 @@ class _SplashScreenState extends State<SplashScreen>
             FadeTransition(
               opacity: _taglineFade,
               child: Text(
-                'Guide touristique officiel',
+                'Explore · Rêve · Vis le Cameroun',
                 style: GoogleFonts.lato(
-                  color: Colors.white.withValues(alpha: 0.55),
-                  fontSize: 14,
-                  letterSpacing: 1.5,
+                  color: Colors.white.withValues(alpha: 0.6),
+                  fontSize: 13,
+                  letterSpacing: 1.8,
+                  fontWeight: FontWeight.w300,
                 ),
               ),
             ),

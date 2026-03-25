@@ -141,6 +141,10 @@ class _AuthScreenState extends State<AuthScreen>
               Navigator.pop(context);
             },
           ),
+          const SizedBox(height: 20),
+          _orDivider(),
+          const SizedBox(height: 16),
+          _googleButton(),
         ],
       ),
     );
@@ -206,6 +210,10 @@ class _AuthScreenState extends State<AuthScreen>
               Navigator.pop(context);
             },
           ),
+          const SizedBox(height: 20),
+          _orDivider(),
+          const SizedBox(height: 16),
+          _googleButton(),
         ],
       ),
     );
@@ -306,6 +314,42 @@ class _AuthScreenState extends State<AuthScreen>
     );
   }
 
+  Widget _googleButton() {
+    return SizedBox(
+      width: double.infinity,
+      height: 52,
+      child: OutlinedButton(
+        onPressed: () {
+          // TODO : Brancher google_sign_in
+        },
+        style: OutlinedButton.styleFrom(
+          backgroundColor: Colors.white,
+          side: const BorderSide(color: Color(0xFFDADCE0), width: 1.5),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(14),
+          ),
+          elevation: 0,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            // Logo Google (G multicolore)
+            _GoogleLogo(),
+            const SizedBox(width: 12),
+            Text(
+              'Continuer avec Google',
+              style: GoogleFonts.inter(
+                fontSize: 15,
+                fontWeight: FontWeight.w500,
+                color: const Color(0xFF3C4043),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _socialButton(
       {required String label,
       required IconData icon,
@@ -330,4 +374,81 @@ class _AuthScreenState extends State<AuthScreen>
       ),
     );
   }
+}
+
+// ─── Logo Google en SVG manuel (4 couleurs officielles) ──────────────────────
+class _GoogleLogo extends StatelessWidget {
+  const _GoogleLogo();
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomPaint(
+      size: const Size(20, 20),
+      painter: _GoogleLogoPainter(),
+    );
+  }
+}
+
+class _GoogleLogoPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    final double w = size.width;
+    final double h = size.height;
+    final double cx = w / 2;
+    final double cy = h / 2;
+    final double r = w / 2;
+
+    // Cercle blanc de fond
+    canvas.drawCircle(
+      Offset(cx, cy),
+      r,
+      Paint()..color = Colors.white,
+    );
+
+    // "G" composé de 4 arcs colorés — approche simplifiée avec 4 secteurs
+    final rect = Rect.fromCircle(center: Offset(cx, cy), radius: r * 0.85);
+
+    void drawArc(Color color, double start, double sweep) {
+      canvas.drawArc(
+        rect,
+        start,
+        sweep,
+        true,
+        Paint()
+          ..color = color
+          ..style = PaintingStyle.fill,
+      );
+    }
+
+    // Rouge (haut-droite)
+    drawArc(const Color(0xFFEA4335), -0.52, 1.05);
+    // Jaune (bas-droite)
+    drawArc(const Color(0xFFFBBC04), 0.53, 1.05);
+    // Vert (bas-gauche)
+    drawArc(const Color(0xFF34A853), 1.58, 1.05);
+    // Bleu (haut-gauche)
+    drawArc(const Color(0xFF4285F4), 2.63, 1.57);
+
+    // Cercle central blanc pour effet anneau
+    canvas.drawCircle(
+      Offset(cx, cy),
+      r * 0.55,
+      Paint()..color = Colors.white,
+    );
+
+    // Barre horizontale droite du G
+    final barPaint = Paint()
+      ..color = const Color(0xFF4285F4)
+      ..style = PaintingStyle.fill;
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(
+        Rect.fromLTWH(cx, cy - r * 0.14, r * 0.85, r * 0.28),
+        Radius.circular(r * 0.05),
+      ),
+      barPaint,
+    );
+  }
+
+  @override
+  bool shouldRepaint(_) => false;
 }

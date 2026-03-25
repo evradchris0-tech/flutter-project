@@ -7,6 +7,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:go_router/go_router.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
+import 'dart:math' as math;
 import '../main.dart';
 import '../models/destination.dart';
 import '../providers/connectivity_provider.dart';
@@ -358,6 +359,35 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   }
 }
 
+// ─── Slogans rotatifs du header ──────────────────────────────────────────────
+const _headerSlogans = [
+  (
+    sub: 'Partez à la découverte de',
+    accent: 'l\'Afrique en miniature',
+    end: '\net du Cameroun profond',
+  ),
+  (
+    sub: 'Vivez',
+    accent: 'l\'aventure ultime',
+    end: '\nau cœur du Cameroun',
+  ),
+  (
+    sub: 'Explorez les',
+    accent: 'trésors cachés',
+    end: '\nde nos 10 régions',
+  ),
+  (
+    sub: 'Découvrez les',
+    accent: 'merveilles authentiques',
+    end: '\ndu Cameroun',
+  ),
+  (
+    sub: 'Plongez dans',
+    accent: 'une nature hors du commun',
+    end: '\nsous nos cieux',
+  ),
+];
+
 // ─── En-tête de section ───────────────────────────────────────────────────────
 class _SectionHeader extends StatelessWidget {
   final String title;
@@ -689,6 +719,22 @@ class _SponsorsSection extends StatelessWidget {
 class _HomeHeader extends StatelessWidget {
   const _HomeHeader();
 
+  static final _slogan = _headerSlogans[
+      math.Random(DateTime.now().millisecondsSinceEpoch ~/ 3600000)
+          .nextInt(_headerSlogans.length)];
+
+  static const _taglines = [
+    'L\'Afrique en miniature dans ta poche',
+    'Ton aventure camerounaise commence ici',
+    'Le Cameroun comme tu ne l\'as jamais vu',
+    'Explore. Rêve. Vis le Cameroun.',
+    '50 destinations, une seule passion',
+  ];
+
+  static final _tagline = _taglines[
+      math.Random(DateTime.now().millisecondsSinceEpoch ~/ 3600000)
+          .nextInt(_taglines.length)];
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -727,10 +773,10 @@ class _HomeHeader extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    'GUIDE TOURISTIQUE OFFICIEL',
+                    _tagline.toUpperCase(),
                     style: GoogleFonts.lato(
-                        color: AppColors.gold, fontSize: 10,
-                        fontWeight: FontWeight.w800, letterSpacing: 1.8),
+                        color: AppColors.gold, fontSize: 9,
+                        fontWeight: FontWeight.w800, letterSpacing: 1.6),
                   ),
                 ]),
                 const SizedBox(height: 10),
@@ -738,22 +784,22 @@ class _HomeHeader extends StatelessWidget {
                   text: TextSpan(
                     children: [
                       TextSpan(
-                        text: 'Découvrez les ',
+                        text: '${_slogan.sub} ',
                         style: GoogleFonts.montserrat(
-                            color: Colors.white, fontSize: 26,
-                            fontWeight: FontWeight.w700, height: 1.2),
+                            color: Colors.white, fontSize: 24,
+                            fontWeight: FontWeight.w700, height: 1.3),
                       ),
                       TextSpan(
-                        text: 'merveilles authentiques',
+                        text: _slogan.accent,
                         style: GoogleFonts.montserrat(
-                            color: AppColors.gold, fontSize: 26,
-                            fontWeight: FontWeight.w700, height: 1.2),
+                            color: AppColors.gold, fontSize: 24,
+                            fontWeight: FontWeight.w700, height: 1.3),
                       ),
                       TextSpan(
-                        text: '\ndu Cameroun',
+                        text: _slogan.end,
                         style: GoogleFonts.montserrat(
-                            color: Colors.white, fontSize: 26,
-                            fontWeight: FontWeight.w700, height: 1.2),
+                            color: Colors.white, fontSize: 24,
+                            fontWeight: FontWeight.w700, height: 1.3),
                       ),
                     ],
                   ),
